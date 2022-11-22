@@ -1,5 +1,10 @@
 <script lang="ts">
-import { Action, PaginationSettings, TransactionTableRow } from 'src/types';
+import {
+  Action,
+  PaginationSettings,
+  TransactionTableRow,
+  TransactionTableActionRow
+} from 'src/types';
 import {
   computed,
   defineComponent,
@@ -131,19 +136,60 @@ export default defineComponent({
                 account.value
               );
       }
+
       if (tableData) {
-        rows.value = tableData.map(
-          (tx) =>
-            ({
-              name: tx.trx_id,
-              transaction: { id: tx.trx_id, type: 'transaction' },
-              timestamp: tx['@timestamp'],
-              action: tx,
+        const map = new Map();
+        tableData.forEach((item) => {
+          const key = item.trx_id;
+          const collection = map.get(key) as {
+            timestamp: string;
+            name: string;
+            actions: TransactionTableActionRow[];
+          };
+          if (!collection) {
+            map.set(key, {
+              name: item.trx_id,
+              transaction: { id: item.trx_id, type: 'transaction' },
+              timestamp: item['@timestamp'],
+              action: item,
               data: hasActions.value
-                ? { data: tx.data, name: tx.account }
-                : { data: tx.act.data, name: tx.act.name }
-            } as TransactionTableRow)
+                ? { data: item.data as unknown, name: item.account as unknown }
+                : { data: item.act.data as unknown, name: item.act.name },
+              actions: [
+                {
+                  name: item.trx_id,
+                  transaction: { id: item.trx_id, type: 'transaction' },
+                  timestamp: item['@timestamp'],
+                  action: item,
+                  data: hasActions.value
+                    ? {
+                        data: item.data as unknown,
+                        name: item.account as unknown
+                      }
+                    : { data: item.act.data as unknown, name: item.act.name }
+                }
+              ]
+            });
+          } else {
+            collection.actions.push({
+              name: item.trx_id,
+              transaction: { id: item.trx_id, type: 'transaction' },
+              timestamp: item['@timestamp'],
+              action: item,
+              data: hasActions.value
+                ? {
+                    data: item.act.data as unknown,
+                    name: item.account
+                  }
+                : { data: item.act.data as unknown, name: item.act.name }
+            });
+          }
+        });
+        rows.value = Array.from(
+          map,
+          ([tx_id, value]) => value as TransactionTableRow
         );
+        console.log(rows.value);
       }
       void filterRows();
     };
@@ -323,21 +369,30 @@ div.row.col-12.q-mt-xs.justify-center.text-left
           q-space
           .col
             q-toggle(v-model="showAge" left-label label="Show timestamp as relative")
-        template( v-slot:body-cell-transaction="props")
-          q-td( :props="props" )
-            AccountFormat(:account="props.value.id" :type="props.value.type")
-        template( v-slot:body-cell-timestamp="props")
-          q-td( :props="props" )
-            DateField( :timestamp="props.value", :showAge='showAge' )
-        template( v-slot:body-cell-action="props")
-          q-td( :props="props" )
-            .row.justify-left.text-weight-light
-              ActionFormat(:action="props.value")
-        template( v-slot:body-cell-data="props")
-          q-td( :props="props"  )
-            DataFormat(:actionData="props.value.data" :actionName="props.value.name ")
+        template( v-slot:body="props")
+          q-tr(:props="props")
+            q-td
+              AccountFormat(:account="props.value.id" :type="props.value.type")
+            q-td
+              DateField( :timestamp="props.value", :showAge='showAge' )
+            q-td
+              .row.justify-left.text-weight-light
+                ActionFormat(:action="props.value")
+            q-td
+              DataFormat(:actionData="props.value.data" :actionName="props.value.name ")
+          q-tr(v-show="props.expand" :props="props" v-for='action in props.actions')
+            q-td
+              AccountFormat(:account="props.value.id" :type="props.value.type")
+            q-td
+              DateField( :timestamp="props.value", :showAge='showAge' )
+            q-td
+              .row.justify-left.text-weight-light
+                ActionFormat(:action="props.value")
+            q-td
+              DataFormat(:actionData="props.value.data" :actionName="props.value.name ")
+
         template( v-slot:pagination="scope")
-          div.row.col-12.q-mt-md.q-mb-xl()
+          div.row.col-12.q-mt-md.q-mb-xl
           div.col-1(align="left")
             q-btn.q-ml-xs.q-mr-xs.col.button-primary(
               :disable="scope.isFirstPage"
