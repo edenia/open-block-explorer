@@ -35,8 +35,8 @@ export default defineComponent({
         const containerWidth = computed(() => diameter.value + 2 * offset.value);
         const formatResourcePercent = computed(() =>
             fraction.value && total.value
-                ? ((fraction.value / total.value) * 100.0).toFixed(2)
-                : '0.00',
+                ? ((fraction.value / total.value) * 100).toFixed(2)
+                : '0',
         );
         const strokeColor = computed(() =>
             parseFloat(formatResourcePercent.value) >= 90 ? 'red' : 'white',

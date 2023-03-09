@@ -50,7 +50,7 @@ export default defineComponent({
         async function moveToSavings() {
             void store.dispatch('account/resetTransaction');
             if (
-                toSavingAmount.value === '0.0000' ||
+                toSavingAmount.value === '0' ||
                 toSavingAmount.value === '' ||
                 Number(toSavingAmount.value) >= eligibleStaked.value
             ) {
@@ -68,7 +68,7 @@ export default defineComponent({
         async function moveFromSavings() {
             void store.dispatch('account/resetTransaction');
             if (
-                fromSavingAmount.value === '0.0000' ||
+                fromSavingAmount.value === '0' ||
                 fromSavingAmount.value === '' ||
                 Number(fromSavingAmount.value) >= assetToAmount(rexSavings.value)
             ) {
@@ -148,7 +148,7 @@ export default defineComponent({
                         v-model="toSavingAmount"
                         class="full-width"
                         standout="bg-deep-purple-2 text-white"
-                        placeholder='0.0000'
+                        placeholder='0'
                         :lazy-rules='true'
                         :rules="[ val => val >= 0 && val <= eligibleStaked  || 'Invalid amount.' ]"
                         type="text"
@@ -181,7 +181,7 @@ export default defineComponent({
                     <q-input
                         v-model="fromSavingAmount"
                         standout="bg-deep-purple-2 text-white"
-                        placeholder='0.0000'
+                        placeholder='0'
                         :lazy-rules='true'
                         :rules="[ val => val >= 0 && val <= assetToAmount(rexSavings)  || 'Invalid amount.' ]"
                         type="text"

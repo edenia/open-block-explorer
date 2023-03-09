@@ -96,7 +96,7 @@ export const actions: ActionTree<AccountStateInterface, StateInterface> = {
             }
         ).rows[0];
         const rexFundBalance =
-            rexfund?.balance ? Number(rexfund.balance.split(' ')[0]) : 0.0;
+            rexfund?.balance ? Number(rexfund.balance.split(' ')[0]) : 0;
         commit('setRexFund', rexFundBalance);
         const rexbal = rexbalRows.rows[0];
         const rexBalance =
@@ -107,7 +107,7 @@ export const actions: ActionTree<AccountStateInterface, StateInterface> = {
         const totalLendable = Number(rexpool.total_lendable.split(' ')[0]);
         const tlosRexRatio = totalRex > 0 ? totalLendable / totalRex : 1;
         commit('setTlosRexRatio', tlosRexRatio);
-        let coreBalance = totalRex > 0 ? tlosRexRatio * rexBalance : 0.0;
+        let coreBalance = totalRex > 0 ? tlosRexRatio * rexBalance : 0;
         coreBalance += rexFundBalance;
 
         let savingsRex = 0;

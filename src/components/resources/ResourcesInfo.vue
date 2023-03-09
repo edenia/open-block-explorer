@@ -11,13 +11,13 @@ export default defineComponent({
         const store = useStore();
         const openCoinDialog = ref<boolean>(false);
         const stakingAccount = ref<string>('');
-        const cpuTokens = ref<string>('0.0000');
-        const netTokens = ref<string>('0.0000');
-        const total = ref<string>('0.0000');
+        const cpuTokens = ref<string>('0');
+        const netTokens = ref<string>('0');
+        const total = ref<string>('0');
         const token = ref<Token>(getChain().getSystemToken());
         const accountData = computed((): API.v1.AccountObject => store.state?.account.data);
         const ramPrice = computed((): string => store.state?.chain.ram_price === '0'
-            ? '0.0000'
+            ? '0'
             : store.state.chain.ram_price);
         const ramAvailable = computed(
             () =>
@@ -67,7 +67,12 @@ export default defineComponent({
                 : 0,
         );
 
-        const formatValue = (val: number): string => `${val.toFixed(token.value.precision)} ${token.value.symbol}`;
+        const formatValue = (val: number): string => {
+            let value = val.toFixed(token.value.precision);
+            value = value.replace(/(\.)?0+$/, ''); // remove trailing zeroes
+
+            return `${value} ${token.value.symbol}`;
+        };
 
         return {
             store,

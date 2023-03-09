@@ -47,7 +47,7 @@ export default defineComponent({
         const MICRO_UNIT = ref<number>(Math.pow(10, -6));
         const KILO_UNIT = ref<number>(Math.pow(10, 3));
         const resources = ref<number>(0);
-        const delegatedResources = ref<number>(0.0);
+        const delegatedResources = ref<number>(0);
         const rexStaked = ref<number>(0);
         const rexProfits = ref<number>(0);
         const rexDeposits = ref<number>(0);
@@ -226,7 +226,7 @@ export default defineComponent({
             const rexFundBalance =
                 rexfund && rexfund.balance
                     ? Number(rexfund.balance.split(' ')[0])
-                    : 0.0;
+                    : 0;
             return rexFundBalance;
         };
 
@@ -267,7 +267,7 @@ export default defineComponent({
             const totalLendable = Number(rexpool.total_lendable.split(' ')[0]);
             const tlosRexRatio = totalRex > 0 ? totalLendable / totalRex : 1;
 
-            const total = totalRex > 0 ? tlosRexRatio * totalRexBalance : 0.0;
+            const total = totalRex > 0 ? tlosRexRatio * totalRexBalance : 0;
             const profits = total - staked;
             return {
                 total,
@@ -326,9 +326,11 @@ export default defineComponent({
 
         const formatAsset = (val: number | string): string => {
             console.assert(typeof val === 'number' || typeof val === 'string', val);
-            return typeof val === 'string'
-                ? val
-                : `${val.toFixed(4)} ${chain.getSystemToken().symbol}`;
+            let value = typeof val === 'string' ? val : val.toFixed(4);
+
+            value = value.replace(/(\.)?0+$/, ''); // remove trailing zeroes
+
+            return `${value} ${chain.getSystemToken().symbol}`;
         };
 
         const resetBalances = () => {
