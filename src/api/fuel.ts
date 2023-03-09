@@ -399,8 +399,12 @@ function determineExpectedActionsLength(costs: CostsType | null) {
     // If there are costs associated with this transaction, 1 new actions is added (the fee)
     if (costs) {
         expectedNewActions += 1;
-        // If there is a RAM cost associated with this transaction, 1 new actio is added (the ram purchase)
-        if (costs.ram !== '0.0000 TLOS') {
+
+        // costs.ram will be in the format of "0.000 TLOS"; convert it to a number
+        const ramCostAsNumber = +costs.ram.replace(/[a-zA-Z]/g, '');
+
+        // If there is a RAM cost associated with this transaction, 1 new action is added (the ram purchase)
+        if (ramCostAsNumber !== 0) {
             expectedNewActions += 1;
         }
     }
