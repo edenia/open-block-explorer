@@ -3,7 +3,7 @@ import { defineComponent, ref, computed, watch } from 'vue';
 import { useStore } from 'src/store';
 import ViewTransaction from 'src/components/ViewTransanction.vue';
 import { getChain } from 'src/config/ConfigManager';
-import { isValidAccount } from 'src/utils/string-utils';
+import { isValidAccount, trimZeroes } from 'src/utils/string-utils';
 import { API, UInt64 } from '@greymass/eosio';
 
 const chain = getChain();
@@ -27,17 +27,13 @@ export default defineComponent({
         const buyPreview = computed(() => {
             if (buyOption.value === buyOptions[0]) {
                 return (
-                    ((Number(buyAmount.value) * 1000) / Number(ramPrice.value)).toFixed(
-                        0,
-                    ) +
+                    ((Number(buyAmount.value) * 1000) / Number(ramPrice.value)).toFixed(0) +
                     ' ' +
                     buyOptions[1]
                 );
             } else {
                 return (
-                    ((Number(buyAmount.value) / 1000) * Number(ramPrice.value)).toFixed(
-                        4,
-                    ) +
+                    trimZeroes(((Number(buyAmount.value) / 1000) * Number(ramPrice.value)).toFixed(4)) +
                     ' ' +
                     buyOptions[0]
                 );

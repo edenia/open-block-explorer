@@ -7,6 +7,7 @@ import { DateTuple } from 'src/types';
 import { getChain } from 'src/config/ConfigManager';
 import { PriceChartData } from 'src/types/PriceChartData';
 import { getCssVar } from 'quasar';
+import { trimZeroes } from 'src/utils/string-utils';
 
 const chain = getChain();
 
@@ -103,12 +104,12 @@ export default defineComponent({
             marketCap.value = formatCurrencyValue(data.marketCap);
             chartOptions.value.series[0].data = data.prices;
         };
-        const formatPercentage = (val: number): string => `${val.toFixed(2)} %`;
+        const formatPercentage = (val: number): string => `${trimZeroes(val.toFixed(2))} %`;
         const formatCurrencyValue = (val: number): string => val < ONE_MILLION
-            ? `$${val.toFixed(2)}`
+            ? `$${trimZeroes(val.toFixed(2))}`
             : val < ONE_BILLION
-                ? `$${(val / ONE_MILLION).toFixed(2)}M`
-                : `$${(val / ONE_BILLION).toFixed(2)}B`;
+                ? `$${trimZeroes((val / ONE_MILLION).toFixed(2))}M`
+                : `$${trimZeroes((val / ONE_BILLION).toFixed(2))}B`;
 
         onMounted(async () => {
             await fetchPriceChartData();

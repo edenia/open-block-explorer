@@ -4,6 +4,7 @@ import { useStore } from 'src/store';
 import { Token } from 'src/types';
 import { API } from '@greymass/eosio';
 import { getChain } from 'src/config/ConfigManager';
+import { trimZeroes } from 'src/utils/string-utils';
 
 export default defineComponent({
     name: 'ResourcesInfo',
@@ -68,8 +69,7 @@ export default defineComponent({
         );
 
         const formatValue = (val: number): string => {
-            let value = val.toFixed(token.value.precision);
-            value = value.replace(/(\.)?0+$/, ''); // remove trailing zeroes
+            let value = trimZeroes(val.toFixed(token.value.precision));
 
             return `${value} ${token.value.symbol}`;
         };

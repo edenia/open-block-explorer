@@ -1,5 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, ref, toRefs } from 'vue';
+import { trimZeroes } from 'src/utils/string-utils';
 
 const PI = 3.1459;
 
@@ -35,7 +36,7 @@ export default defineComponent({
         const containerWidth = computed(() => diameter.value + 2 * offset.value);
         const formatResourcePercent = computed(() =>
             fraction.value && total.value
-                ? ((fraction.value / total.value) * 100).toFixed(2)
+                ? trimZeroes(((fraction.value / total.value) * 100).toFixed(2))
                 : '0',
         );
         const strokeColor = computed(() =>
@@ -44,7 +45,7 @@ export default defineComponent({
         const fractionUnits = computed(
             () => `${fraction.value}${unit.value}/${total.value}${unit.value}`,
         );
-        const available = computed(() => (total.value - fraction.value).toFixed(3));
+        const available = computed(() => trimZeroes((total.value - fraction.value).toFixed(3)));
         const dashArray = computed(() => {
             if (Number.isNaN(formatResourcePercent.value)) {
                 return '0';

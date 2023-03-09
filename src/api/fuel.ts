@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-// Most of this code was taken and addapted from https://gist.github.com/aaroncox/d74a73b3d9fbc20836c32ea9deda5d70
+// Most of this code was taken and adapted from https://gist.github.com/aaroncox/d74a73b3d9fbc20836c32ea9deda5d70
 import {
     SignTransactionConfig,
     SignTransactionResponse,
@@ -20,6 +20,7 @@ import {
 } from '@greymass/eosio';
 import { getChain } from 'src/config/ConfigManager';
 import { Dialog } from 'quasar';
+import { trimZeroes } from 'src/utils/string-utils';
 
 // The maximum fee per transaction this script is willing to accept
 const maxFee = 0.05;
@@ -434,7 +435,7 @@ function validateActionsContent(
         if (expectedNewActions > 2) {
             validateActionsRamContent(signer, modifiedTransaction);
         }
-        return `${new Number(totalFee).toFixed(4)} TLOS`;
+        return `${trimZeroes((+totalFee).toFixed(4))} TLOS`;
     } else {
         return null;
     }

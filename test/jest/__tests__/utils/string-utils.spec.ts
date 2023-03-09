@@ -49,6 +49,7 @@ describe('string utility functions', () => {
         it('should correctly trim zeroes', () => {
             const rawInputs = [
                 '0.0000',
+                '0.0',
                 '0',
                 '0.10',
                 '0.1',
@@ -60,6 +61,7 @@ describe('string utility functions', () => {
             ];
 
             const expectedOutputs = [
+                '0',
                 '0',
                 '0',
                 '0.1',
@@ -84,6 +86,7 @@ describe('string utility functions', () => {
                 '1.0 TLOS',
                 '.',
                 '1.',
+                '0.',
             ];
 
             invalidInputs.forEach(input => expect(() => trimZeroes(input)).toThrow());

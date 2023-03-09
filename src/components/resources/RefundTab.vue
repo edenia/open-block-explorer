@@ -5,6 +5,7 @@ import { Token } from 'src/types';
 import { mapActions } from 'vuex';
 import ViewTransaction from 'src/components/ViewTransanction.vue';
 import { API } from '@greymass/eosio';
+import { trimZeroes } from 'src/utils/string-utils';
 
 export default defineComponent({
     name: 'RefundTab',
@@ -28,18 +29,15 @@ export default defineComponent({
         const accountData = computed((): API.v1.AccountObject => store.state?.account.data);
         const totalRefund = computed((): string => {
             const totalRefund = refundRequest.value
-                ? (
-                    refundRequest.value.cpu_amount.value +
-                    refundRequest.value.net_amount.value
-                ).toFixed(4)
+                ? trimZeroes(
+                    (refundRequest.value.cpu_amount.value + refundRequest.value.net_amount.value).toFixed(4),
+                )
                 : 0;
             return `${totalRefund} ${token.value.symbol}`;
         });
 
         function formatStaked(staked: number): string {
-            const stakedValue = (
-                staked / Math.pow(10, token.value.precision)
-            ).toFixed(2);
+            const stakedValue = trimZeroes((staked / Math.pow(10, token.value.precision)).toFixed(2));
             return `${stakedValue} ${token.value.symbol}`;
         }
 

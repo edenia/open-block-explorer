@@ -11,23 +11,25 @@ export function isValidTransactionHex(hexString: string): boolean {
 }
 
 /**
- * Given a string representation of a number, returns that number with trailing zeroes trimmed (trailing '.' will
+ * Given a string representation of a number, returns that number with trailing zeroes trimmed (trailing `.` will
  * also be trimmed if all decimals are zero)
  *
- * @param num - a string representation of a number, e.g. "0.1100"
+ * @param number - a string representation of a number, e.g. "0.1100"
+ *
+ * @return supplied number-string with trailing zeroes trimmed
  */
-export function trimZeroes(num: string): string {
+export function trimZeroes(number: string): string {
     const floatingPointNumberRegex = /^-?(0|[1-9]\d*)(\.\d+)?$/;
     const trailingZeroesRegex = /(\.)?0+$/;
-    const isNumber = floatingPointNumberRegex.test(num);
+    const isNumber = floatingPointNumberRegex.test(number);
 
     if (!isNumber) {
-        throw `Supplied string "${num}" does not represent a number`;
+        throw `Supplied string "${number}" does not represent a number`;
     }
 
-    if (num === '0') {
-        return num;
+    if (number === '0') {
+        return number;
     }
 
-    return num.replace(trailingZeroesRegex, '');
+    return number.replace(trailingZeroesRegex, '');
 }
