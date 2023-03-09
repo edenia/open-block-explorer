@@ -2,9 +2,10 @@ import { describe, expect, it } from '@jest/globals';
 import {
     isValidAccount,
     isValidTransactionHex,
-} from 'src/utils/stringValidator';
+    trimZeroes,
+} from 'src/utils/string-utils';
 
-describe('stringValidator utility functions', () => {
+describe('string utility functions', () => {
     describe('isValidAccount', () => {
         it('returns true for accounts with lowercase letters, numbers 1-5, containing non-terminating periods up to 13 characters', () => {
             const validAntelopeAccount = '.abcdef.12345';
@@ -41,6 +42,51 @@ describe('stringValidator utility functions', () => {
         it('returns false if string does not contain valid lowercase characters', () => {
             const invalidTransactionHex = 'abcdefg';
             expect(isValidTransactionHex(invalidTransactionHex)).toBe(false);
+        });
+    });
+
+    describe('trimZeroes', () => {
+        it('should correctly trim zeroes', () => {
+            const rawInputs = [
+                '0.0000',
+                '0',
+                '0.10',
+                '0.1',
+                '1.0',
+                '1.0000',
+                '1.1',
+                '1.10',
+                '1.01',
+            ];
+
+            const expectedOutputs = [
+                '0',
+                '0',
+                '0.1',
+                '0.1',
+                '1',
+                '1',
+                '1.1',
+                '1.1',
+                '1.01',
+            ];
+
+            rawInputs.forEach((input, index) => {
+                expect(trimZeroes(input)).toBe(expectedOutputs[index]);
+            });
+        });
+
+        it('should throw an error when passed an invalid number', () => {
+            const invalidInputs = [
+                'a',
+                '',
+                'zero',
+                '1.0 TLOS',
+                '.',
+                '1.',
+            ];
+
+            invalidInputs.forEach(input => expect(() => trimZeroes(input)).toThrow());
         });
     });
 });
